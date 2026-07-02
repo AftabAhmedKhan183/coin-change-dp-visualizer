@@ -8,24 +8,16 @@ An interactive web-based visualization of the **Coin Change Problem** using the 
 
 ## 🚀 Features
 
-- ✅ Interactive Coin Change Problem Solver
-- ✅ Bottom-Up Dynamic Programming Implementation
-- ✅ Step-by-Step DP Table Visualization
-- ✅ Automatic DP Table Generation
-- ✅ DP Recurrence Explanation
-- ✅ All Valid Coin Combinations
-- ✅ Complexity Analysis
-- ✅ Pseudocode Display
-- ✅ Input Validation
-- ✅ Responsive Modern UI
-
----
-
-## 📸 Preview
-
-<img width="100%" alt="Project Preview" src="https://via.placeholder.com/1200x600?text=Add+Your+Project+Screenshot+Here">
-
-> Replace this image with screenshots of your project.
+-  Interactive Coin Change Problem Solver
+-  Bottom-Up Dynamic Programming Implementation
+-  Step-by-Step DP Table Visualization
+-  Automatic DP Table Generation
+-  DP Recurrence Explanation
+-  All Valid Coin Combinations
+-  Complexity Analysis
+-  Pseudocode Display
+-  Input Validation
+-  Responsive Modern UI
 
 ---
 
