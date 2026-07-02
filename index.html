@@ -1,0 +1,195 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Coin Change — DP Visualizer</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Share+Tech+Mono&family=Rajdhani:wght@400;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+
+  <!-- HEADER -->
+  <header class="header">
+    <div class="header-bar"></div>
+    <div class="header-content">
+      <div class="header-meta">DAA Course Project</div>
+      <div class="header-title">
+        <span class="glow-cyan">Coin Change</span>
+        <span class="header-sub">/ Dynamic Programming Visualizer</span>
+      </div>
+    </div>
+    <div class="header-tags">
+      <span class="tag tag-cyan">Bottom-Up DP</span>
+      <span class="tag tag-green">O(n·V) Time</span>
+      <span class="tag tag-orange">O(n·V) Space</span>
+    </div>
+  </header>
+
+  <main class="main">
+
+    <!-- PROBLEM STATEMENT -->
+    <div class="panel fade-in" style="animation-delay:0.05s">
+      <div class="section-label">▸ PROBLEM STATEMENT</div>
+      <p class="problem-text">
+        Given an array of coin denominations <span class="glow-green">coins[]</span> and a target amount
+        <span class="glow-green">V</span>, find the <span class="glow-gold">total number of distinct ways</span>
+        to make exactly V using unlimited coins of each denomination.
+        Order does not matter — <code>1+2</code> and <code>2+1</code> count as one way.
+      </p>
+    </div>
+
+    <!-- INPUT -->
+    <div class="panel fade-in" style="animation-delay:0.1s">
+      <div class="section-label">▸ INPUT PARAMETERS</div>
+      <div class="input-row">
+        <div class="input-group" style="flex:2">
+          <label class="input-label">COIN DENOMINATIONS (comma-separated)</label>
+          <input id="coinsInput" class="inp" type="text" value="1, 2, 3" placeholder="e.g. 1, 2, 5" />
+        </div>
+        <div class="input-group" style="flex:1">
+          <label class="input-label">TARGET AMOUNT V</label>
+          <input id="amountInput" class="inp inp-cyan" type="number" value="4" min="1" placeholder="e.g. 4" />
+        </div>
+        <button id="runBtn" class="btn-run">▶ RUN</button>
+      </div>
+      <div id="errorMsg" class="error-msg hidden"></div>
+    </div>
+
+    <!-- RESULTS (hidden until run) -->
+    <div id="results" class="hidden">
+
+      <!-- SUMMARY CARDS -->
+      <div class="cards fade-in">
+        <div class="card">
+          <div class="card-label">Total Ways</div>
+          <div id="cardWays" class="card-value glow-green">—</div>
+        </div>
+        <div class="card">
+          <div class="card-label">Coins Used</div>
+          <div id="cardCoins" class="card-value glow-cyan">—</div>
+        </div>
+        <div class="card">
+          <div class="card-label">Target Amount</div>
+          <div id="cardAmount" class="card-value glow-gold">—</div>
+        </div>
+      </div>
+
+      <!-- RECURRENCE -->
+      <div class="panel fade-in">
+        <div class="section-label">▸ DP RECURRENCE</div>
+        <div class="code-block"><code><span class="c-green">dp[i][j]</span> = ways to make amount <span class="c-cyan">j</span> using first <span class="c-cyan">i</span> coin types</code></div>
+        <div class="code-block"><code><span class="c-green">dp[i][j]</span> = <span class="c-cyan">dp[i−1][j]</span> (exclude coin i) + <span class="c-cyan">dp[i][j−coins[i]]</span> (include coin i)</code></div>
+        <div class="code-block"><code>Base case: <span class="c-gold">dp[i][0] = 1</span> for all i &nbsp;(one way to make 0: use no coins)</code></div>
+      </div>
+
+      <!-- DP TABLE -->
+      <div class="panel fade-in">
+        <div class="table-header">
+          <div class="section-label">▸ DP TABLE</div>
+          <div id="stepControls" class="step-controls">
+            <button id="stepModeBtn" class="btn-outline">⚡ STEP MODE</button>
+            <div id="stepNav" class="hidden step-nav">
+              <button id="prevBtn" class="btn-outline" disabled>◀ PREV</button>
+              <button id="playBtn" class="btn-outline btn-play">▶ PLAY</button>
+              <button id="nextBtn" class="btn-outline">NEXT ▶</button>
+              <button id="exitBtn" class="btn-outline btn-muted">✕ EXIT</button>
+            </div>
+          </div>
+        </div>
+
+        <!-- Progress bar -->
+        <div id="progressWrap" class="progress-wrap hidden">
+          <div class="progress-labels">
+            <span id="stepLabel">Step 0</span>
+            <span id="stepPct">0%</span>
+          </div>
+          <div class="progress-track">
+            <div id="progressBar" class="progress-bar"></div>
+          </div>
+        </div>
+
+        <!-- Step explanation -->
+        <div id="stepExplain" class="step-explain hidden"></div>
+
+        <!-- Table container -->
+        <div class="table-wrap">
+          <table id="dpTable" class="dp-table"></table>
+        </div>
+
+        <!-- Legend -->
+        <div class="legend">
+          <div class="legend-item"><div class="legend-dot dot-computed"></div>Computed</div>
+          <div class="legend-item"><div class="legend-dot dot-active"></div>Active Cell</div>
+          <div class="legend-item"><div class="legend-dot dot-answer"></div>Answer</div>
+        </div>
+      </div>
+
+      <!-- COMBINATIONS -->
+      <div class="panel fade-in">
+        <div class="section-label" id="comboLabel">▸ ALL VALID COMBINATIONS</div>
+        <div id="combosWrap" class="combos-wrap"></div>
+      </div>
+
+      <!-- COMPLEXITY -->
+      <div class="panel fade-in">
+        <div class="section-label">▸ COMPLEXITY ANALYSIS</div>
+        <div class="complexity-grid">
+          <div class="cx-card">
+            <div class="cx-label">Time Complexity</div>
+            <div class="cx-value c-cyan">O(n × V)</div>
+            <div id="cxTime" class="cx-desc">—</div>
+          </div>
+          <div class="cx-card">
+            <div class="cx-label">Space Complexity</div>
+            <div class="cx-value c-green">O(n × V)</div>
+            <div id="cxSpace" class="cx-desc">—</div>
+          </div>
+          <div class="cx-card">
+            <div class="cx-label">Approach</div>
+            <div class="cx-value c-gold">Bottom-Up</div>
+            <div class="cx-desc">Iterative tabulation, no recursion stack</div>
+          </div>
+          <div class="cx-card">
+            <div class="cx-label">Optimal Substructure</div>
+            <div class="cx-value c-orange">YES</div>
+            <div class="cx-desc">dp[i][j] built from dp[i−1][j] and dp[i][j−c]</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- PSEUDOCODE -->
+      <div class="panel fade-in">
+        <div class="section-label">▸ PSEUDOCODE</div>
+        <pre class="pseudocode"><span class="c-cyan">function</span> <span class="c-green">countWays</span>(coins[], V):
+  n = length(coins)
+
+  <span class="c-cyan">// Initialize DP table</span>
+  dp[0..n][0..V] = 0
+
+  <span class="c-cyan">// Base case: 1 way to make amount 0</span>
+  <span class="c-orange">for</span> i = 0 <span class="c-orange">to</span> n:
+    dp[i][0] = 1
+
+  <span class="c-cyan">// Fill table bottom-up</span>
+  <span class="c-orange">for</span> i = 1 <span class="c-orange">to</span> n:
+    <span class="c-orange">for</span> j = 1 <span class="c-orange">to</span> V:
+      dp[i][j] = dp[i-1][j]               <span class="c-cyan">// exclude coins[i]</span>
+      <span class="c-orange">if</span> coins[i-1] &lt;= j:
+        dp[i][j] += dp[i][j - coins[i-1]] <span class="c-cyan">// include coins[i]</span>
+
+  <span class="c-orange">return</span> dp[n][V]   <span class="c-cyan">// final answer</span></pre>
+      </div>
+
+    </div><!-- /results -->
+
+  </main>
+
+  <footer class="footer">
+    DESIGN &amp; ANALYSIS OF ALGORITHMS — DYNAMIC PROGRAMMING — COIN CHANGE PROBLEM
+  </footer>
+
+  <script src="script.js"></script>
+</body>
+</html>
